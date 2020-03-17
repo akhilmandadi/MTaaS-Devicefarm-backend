@@ -4,6 +4,7 @@
 ## Steps to Setup Node JS Server
 
 > **git clone https://github.com/akhilmandadi/MTaaS-Devicefarm-backend.git**
+
 > **npm install**
 #### Export Environment Variables
 Set/Export the below Env Variables in your machine
