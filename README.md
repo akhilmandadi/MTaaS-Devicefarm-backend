@@ -17,3 +17,5 @@ Set/Export the below Env Variables in your machine
 > **PORT** - App runs on 8080 if not specified
 
 > **REACT_URL** - The React App URL for CORS
+
+> **MONGO_CONN_URL** - Mongo DB Connection URL
