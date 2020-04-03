@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const projects  = require('../services/projects')
+const userAccess = require('../services/userAccess')
 
-router.get('/projects', projects.getProjects);
+router.get('/signin', userAccess.signin)
+router.post('/signup', userAccess.signup)
 
 module.exports = router;
