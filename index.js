@@ -5,12 +5,17 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 const logger = require('tracer').colorConsole();
+const morganLogger = require('morgan');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env.REACT_URL, credentials: true }));
 const connection = require('./db/connection');
 const routes = require('./routes/routes');
-const projectRoutes = require('./routes/project')
+const projectRoutes = require('./routes/project');
+const deviceRoute = require('./routes/devices');
+const allocationRoute = require('./routes/allocation');
+const testRoute = require('./routes/test');
+const errorHandler = require('./errorHandler').errorHandler;
 
 async function initializeApplication() {
     try {
@@ -21,8 +26,14 @@ async function initializeApplication() {
             });
         });
         await connection.createConnection();
+        app.use(morganLogger('dev'));
         app.use(routes);
         app.use(projectRoutes);
+        app.use('/devices',deviceRoute);
+        app.use('/allocations',allocationRoute);
+        app.use('/tests',testRoute);
+        //catches all unhandled errors
+        app.use(errorHandler);
 
         app.listen(process.env.PORT || 8080, () => {
             logger.debug('App listening on port 8080');
