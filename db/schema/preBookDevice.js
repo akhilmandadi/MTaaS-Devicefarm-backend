@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 
 const PreBookDeviceSchema = new mongoose.Schema({
+  deviceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    auto: true
+  },
   deviceType: {
     type: String,
-    required: true
+    required: true,
+    enum: ['real','emulator']
   },
   name: {
     type: String,
@@ -11,14 +17,13 @@ const PreBookDeviceSchema = new mongoose.Schema({
   },
   osType: {
     type: String,
-    required: true
+    required: true,
+    enum: ['android','ios']
   },
-  status: {
+  osVersion: {
     type: String,
     required: true,
-    default: 'available',
-    enum: ['available','maintenance']
-  }
+  },
 })
 
 module.exports.PreBookDevice = mongoose.model.PreBookDevice || mongoose.model('PreBookDevice',PreBookDeviceSchema);
