@@ -32,7 +32,6 @@ async function initializeApplication() {
         app.use('/devices',deviceRoute);
         app.use('/allocations',allocationRoute);
         app.use('/tests',testRoute);
-        //catches all unhandled errors
         app.use(errorHandler);
 
         app.listen(process.env.PORT || 8080, () => {

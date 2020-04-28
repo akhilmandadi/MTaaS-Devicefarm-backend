@@ -10,6 +10,7 @@ const managerSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
+    blocked: { type: Boolean, required: true, default: false }
 }, { collection: 'managers' });
 
 const createModel = function () {
