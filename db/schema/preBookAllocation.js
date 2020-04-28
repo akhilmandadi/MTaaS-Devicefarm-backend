@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-<<<<<<< HEAD
-=======
 let {PreBookDevice} = require('./preBookDevice')
->>>>>>> tmp
 
 const PreBookAllocationSchema = new mongoose.Schema({
   device: {

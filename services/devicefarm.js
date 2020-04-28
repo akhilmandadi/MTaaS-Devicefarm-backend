@@ -4,6 +4,8 @@ const logger = require('tracer').colorConsole();
 
 let {OnDemandAllocation} = require('../db/schema/onDemandAllocation');
 
+const {getRemoteAccessSession: getRemoteAccessSession1,getRemoteAccessSessionWhenReady,createRemoteAccessSession: createRemoteAccessSession1, stopRemoteAccessSession: stopRemoteAccessSession1} = require('./../DeviceFarm/devicefarmSession');
+
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'us-west-2' })
 
@@ -345,55 +347,19 @@ const createRun = async (req,res) => {
     });
 }
 
-const getRemoteAccessSession = (req, resp) => {
-  var params = {
-    arn: req.param('sessionArn')
-  };
-  devicefarm.getRemoteAccessSession(params, function(err, data) {
-    if (err){
-      resp.json(err); // an error occurred
-    }else{
-      resp.json(data);
-    }
-  });
-}
+const getRemoteAccessSession = async (req, resp) => {
+  const df_resp = await getRemoteAccessSession1(req.param('sessionArn'));
+  resp.json(df_resp);
+};
 
-const createRemoteAccessSession = (req, resp) => {
-  var params = {
-    name: "MySession", 
-    configuration: {
-     billingMethod: "METERED"
-    }, 
-    deviceArn: req.body.deviceArn,
-    projectArn: process.env.DEVICE_FARM_PROJECT_ARN// You can get the project ARN by using the list-projects CLI command.
-   };
-   devicefarm.createRemoteAccessSession(params, function(err, data) {
-    if (err){
-      resp.json(err);; // an error occurred
-    } 
-    else{
-      resp.json(data);
-    };           // successful response
-     /*
-     data = {
-      remoteAccessSession: {
-      }
-     }
-     */
-   });
-}
+const createRemoteAccessSession = async (req, resp) => {
+  const df_resp = await createRemoteAccessSession1(req.body);
+  resp.json(df_resp);
+};
 
-const stopRemoteAccessSession = (req, resp) => {
-  var params = {
-    arn: req.body.sessionArn
-  };
-  devicefarm.stopRemoteAccessSession(params, function(err, data) {
-    if (err){
-      resp.json(err); // an error occurred
-    }else{
-      resp.json(data);
-    }
-  });
+const stopRemoteAccessSession = async (req, resp) => {
+  const df_resp = await stopRemoteAccessSession1(req.body.sessionArn);
+  resp.json(df_resp);
 }
 
 module.exports.getRun = getRun;
