@@ -14,6 +14,7 @@ const projectSchema = new Schema({
             id: { type: mongoose.Schema.Types.ObjectId, ref: "testers" }
         }
     ],
+    blocked: { type: Boolean, required: true, default: false },
 }, { collection: 'projects' });
 
 const createModel = function () {

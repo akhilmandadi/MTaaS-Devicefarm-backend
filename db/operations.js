@@ -28,6 +28,12 @@ const updateField = async (modelObject, _id, update) => {
     }
 }
 
+const deleteDocument = async function (modelObject, _id) {
+    const result = await modelObject.deleteOne({ _id });
+    return result;
+}
+
 module.exports.findDocumentsByQuery = findDocumentsByQuery;
 module.exports.saveDocuments = saveDocuments;
 module.exports.updateField = updateField;
+module.exports.deleteDocument = deleteDocument;
