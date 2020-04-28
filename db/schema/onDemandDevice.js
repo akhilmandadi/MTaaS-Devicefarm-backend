@@ -24,6 +24,10 @@ const OnDemandDeviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  arn:{
+    type: String,
+    required: true,
+  },
   // additionalDetails:{
   //   type: JSON,
   //   required: true,
