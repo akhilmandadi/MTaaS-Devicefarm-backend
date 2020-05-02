@@ -27,7 +27,17 @@ const runSchema = new Schema({
     artifacts: { type: Object, required: false },
     stopped: { type: String, required: false },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: "projects" },
-    testerId: { type: mongoose.Schema.Types.ObjectId, ref: "testers" }
+    testerId: { type: mongoose.Schema.Types.ObjectId, ref: "testers" },
+    allocationId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        refPath: 'allocationType', 
+        required: true 
+    },
+    allocationType: {
+        type: String, 
+        enum: ['OnDemandAlloation','PreBookAllocation'],
+        required: true,
+    }
 }, { collection: 'runs' });
 
 const createModel = function () {

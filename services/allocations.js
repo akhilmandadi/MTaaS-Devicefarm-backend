@@ -15,6 +15,7 @@ module.exports.getAllOnDemandAllocations = async (req, resp) => {
   OnDemandAllocation.find(req.query || {})
     .populate('device')
     .populate('project')
+    .sort('ended')
     .then(allocations => {
       resp.json({allocations});
     })
@@ -99,7 +100,7 @@ module.exports.updateOnDemandAllocationStatusEmulator = async (req, resp) => {
 }
 
 module.exports.getOnDemandAllocation = (req, resp) => {
-  OnDemandAllocation.findById(req.params.id).then(onDemandAllocation => {
+  OnDemandAllocation.findById(req.params.id).populate('device').then(onDemandAllocation => {
     resp.json(onDemandAllocation);
   });
 }
@@ -119,7 +120,7 @@ module.exports.onDemandDeallocateReal = (req, resp, next) => {
 
 
 module.exports.getPreBookAllocation = (req, resp) => {
-  PreBookAllocation.findById(req.params.id).then(onDemandAllocation => {
+  PreBookAllocation.findById(req.params.id).populate('device').then(onDemandAllocation => {
     resp.json(onDemandAllocation);
   });
 }

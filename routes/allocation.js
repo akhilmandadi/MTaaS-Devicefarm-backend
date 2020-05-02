@@ -12,6 +12,6 @@ router.post('/ondemand/:id/deallocate/emulator', allocations.onDemandDeallocateE
 
 router.get('/prebook', allocations.getAllPreBookAllocations);
 router.post('/prebook', allocations.createPreBookAllocation);
-router.post('/prebook/:id', allocations.getPreBookAllocation);
+router.get('/prebook/:id', allocations.getPreBookAllocation);
 
 module.exports = router;
