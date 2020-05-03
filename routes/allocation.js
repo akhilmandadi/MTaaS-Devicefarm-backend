@@ -13,5 +13,7 @@ router.post('/ondemand/:id/deallocate/emulator', allocations.onDemandDeallocateE
 router.get('/prebook', allocations.getAllPreBookAllocations);
 router.post('/prebook', allocations.createPreBookAllocation);
 router.get('/prebook/:id', allocations.getPreBookAllocation);
+router.get('/testerbillingperiods/:id', allocations.getTesterBillingPeriods);
+router.get('/peojectallocationdetails/:project_id', allocations.getProjectAllocationDetails);
 
 module.exports = router;

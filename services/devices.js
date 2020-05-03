@@ -1,5 +1,6 @@
 let {OnDemandDevice} = require('./../db/schema/onDemandDevice');
 let {PreBookAllocation} = require('./../db/schema/preBookAllocation')
+let {PreBookDevice} = require('./../db/schema/preBookDevice');
 
 module.exports.getAvailableOnDemandDevices = (req,resp) => {
   OnDemandDevice.find(req.query).then(devices => {
