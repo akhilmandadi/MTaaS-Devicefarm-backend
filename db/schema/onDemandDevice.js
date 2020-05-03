@@ -18,9 +18,13 @@ const OnDemandDeviceSchema = new mongoose.Schema({
   osType: {
     type: String,
     required: true,
-    enum: ['android','ios']
+    enum: ['Android','iOS']
   },
   osVersion: {
+    type: String,
+    required: true,
+  },
+  arn:{
     type: String,
     required: true,
   },

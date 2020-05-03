@@ -8,10 +8,19 @@ const operations = require('../db/operations');
 
 const signin = async (request, response) => {
     try {
-        const { email } = request.query;
+        const { email, password } = request.query;
         const { persona } = request.query;
+        if (persona === "admin") {
+            if (email === "admin@mtaas.com" && password === "admin") return response.status(200).json({
+                "email": "admin@mtaas.com",
+                persona,
+                "name": "Admin",
+                "id": "admin"
+            });
+            else throw createError(401, 'Invalid Credentials');
+        }
         const model = (persona === "tester" ? tester : manager)
-        const resp = await operations.findDocumentsByQuery(model, { email }, { __v: 0 });
+        const resp = await operations.findDocumentsByQuery(model, { email, password, blocked: false }, { __v: 0 });
         if (_.isEmpty(resp)) {
             throw createError(401, 'Invalid Credentials');
         }

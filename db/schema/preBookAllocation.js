@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+let {PreBookDevice} = require('./preBookDevice')
 
 const PreBookAllocationSchema = new mongoose.Schema({
   device: {
@@ -7,12 +8,33 @@ const PreBookAllocationSchema = new mongoose.Schema({
   },
   tester: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tester'
+    required: true,
+    ref: 'tester'
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project'
+    required: true,
+    ref: 'projects'
+  },
+  started: {
+    type: Date,
+    required: true,
+  },
+  ended: {
+    type: Date,
+    required: true,
   }
 })
+
+PreBookAllocationSchema.statics.allocateDevice = async function(data){
+  let preBookDevice = await PreBookDevice.findById(data.device);
+  if(!preBookDevice){
+    throw new Error(`Device not present`);
+  }
+  let preBookAllocation = new this(data);
+  await preBookAllocation.save().catch(e => {throw(e)});
+  return preBookAllocation
+}
+
 
 module.exports.PreBookAllocation = mongoose.model.PreBookAllocation || mongoose.model('PreBookAllocation',PreBookAllocationSchema)
