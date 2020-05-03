@@ -26,6 +26,7 @@ const runSchema = new Schema({
     testPackageFileType: { type: String, required: true },
     artifacts: { type: Object, required: false },
     stopped: { type: String, required: false },
+    deviceMinutes: { type: Number, required: false },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: "projects" },
     testerId: { type: mongoose.Schema.Types.ObjectId, ref: "testers" },
     allocationId: { 
