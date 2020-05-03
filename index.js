@@ -15,6 +15,7 @@ const projectRoutes = require('./routes/project');
 const deviceRoute = require('./routes/devices');
 const devicefarmRoute = require('./routes/devicefarm');
 const allocationRoute = require('./routes/allocation');
+const remoteAccessSessionRoute = require('./routes/remoteAccessSession');
 const testRoute = require('./routes/test');
 const errorHandler = require('./errorHandler').errorHandler;
 
@@ -34,6 +35,7 @@ async function initializeApplication() {
         app.use('/allocations',allocationRoute);
         app.use('/tests',testRoute);
         app.use('/devicefarm',devicefarmRoute);
+        app.use('/remoteAccessSession',remoteAccessSessionRoute);
         
         //catches all unhandled errors
         app.use(errorHandler);

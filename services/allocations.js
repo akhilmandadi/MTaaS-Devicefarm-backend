@@ -3,6 +3,7 @@ let {OnDemandAllocation} = require('./../db/schema/onDemandAllocation');
 let {PreBookAllocation} = require('./../db/schema/preBookAllocation');
 let {OnDemandDevice} = require('./../db/schema/onDemandDevice');
 let {PreBookDevice} = require('./../db/schema/preBookDevice');
+let {RemoteAccessSession} = require('./../db/schema/remoteAccessSession');
 
 const {getRemoteAccessSession} = require('./../DeviceFarm/devicefarmSession');
 
@@ -52,16 +53,7 @@ module.exports.getAllPreBookAllocations = async (req, resp) => {
 }
 
 module.exports.createOnDemandAllocationEmulator = async (req, resp, next) => {
-  let i;
-  for(i=0;i<req.body.devices.length;i++){
-    device = req.body.devices[i];
-      let data = {
-        tester: req.body.tester,
-        project: req.body.project,
-        device: device,
-      }
-      await OnDemandAllocation.allocateDeviceEmulator(data).catch(e => next(e));
-  }
+  await RemoteAccessSession.allocateDeviceEmulator(req.body).catch(e => next(e));
   resp.json({success: true});
 }
 

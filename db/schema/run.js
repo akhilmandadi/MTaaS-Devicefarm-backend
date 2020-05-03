@@ -29,14 +29,9 @@ const runSchema = new Schema({
     deviceMinutes: { type: Number, required: false },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: "projects" },
     testerId: { type: mongoose.Schema.Types.ObjectId, ref: "testers" },
-    allocationId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        refPath: 'allocationType', 
-        required: true 
-    },
     allocationType: {
         type: String, 
-        enum: ['OnDemandAlloation','PreBookAllocation'],
+        enum: ['ondemand','prebook'],
         required: true,
     }
 }, { collection: 'runs' });
