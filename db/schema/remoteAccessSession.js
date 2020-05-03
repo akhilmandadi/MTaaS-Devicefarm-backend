@@ -30,14 +30,9 @@ const RemoteAccessSessionSchema = new mongoose.Schema({
 })
 
 RemoteAccessSessionSchema.statics.createRemoteAccessSession = async function(data){
-  let Device = data.allocationType === 'ondemand' ? OnDemandDevice : PreBookDevice;
-  let device = await Device.findById(data.device);
-  if(!device){
-    throw new Error(`Device already in use`);
-  }
   const sessionResp = await createRemoteAccessSession({
-    name: device.name + ' - ' + data.tester,
-    deviceArn: device.arn
+    name: data.name + ' - ' + data.tester,
+    deviceArn: data.arn
   });
   if(sessionResp.err){
     throw new Error(`Cannot allocate a device`);

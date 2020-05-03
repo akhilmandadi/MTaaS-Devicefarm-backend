@@ -14,9 +14,8 @@ module.exports.getAllOnDemandAllocations = async (req, resp) => {
   let deviceIds = devices.map(device => device._id.toString());
   req.query.device = {$in: deviceIds};
   OnDemandAllocation.find(req.query || {})
-    .populate('device')
-    .populate('project')
-    .sort('ended')
+    .populate('projectId')
+    .sort('end_time')
     .then(allocations => {
       resp.json({allocations});
     })
@@ -24,14 +23,8 @@ module.exports.getAllOnDemandAllocations = async (req, resp) => {
   
 
 module.exports.getAllPreBookAllocations = async (req, resp) => {
-  let deviceType = req.query.deviceType || 'real';
-  delete req.query.deviceType;
-  let devices = await PreBookDevice.find({deviceType: deviceType}).select('_id');
-  let deviceIds = devices.map(device => device._id.toString());
-  req.query.device = {$in: deviceIds}
   let allPreBookAllocations = await PreBookAllocation.find(req.query || {})
-    .populate('device')
-    .populate('project')
+    .populate('projectId')
   let allocations = {
     pastAllocations: [],
     currentAllocations: [],
@@ -39,11 +32,11 @@ module.exports.getAllPreBookAllocations = async (req, resp) => {
   }
   let currentTime = new Date();
   allPreBookAllocations.forEach(allocation => {
-    if(allocation.ended < currentTime){
+    if(new Date(allocation.end_time) < currentTime){
       allocations.pastAllocations.push(allocation);
-    }else if(allocation.started > currentTime){
+    }else if(new Date(allocation.start_time) > currentTime){
       allocations.futureAllocations.push(allocation);
-    }else if(allocation.started < currentTime && allocation.ended > currentTime){
+    }else if(new Date(allocation.start_time) < currentTime && new Date(allocation.end_time) > currentTime){
       allocations.currentAllocations.push(allocation);
     }else{
       logger.error(`allocation does not match any of the conditions - ${JSON.stringify(allocation)}`)
@@ -77,8 +70,8 @@ module.exports.createPreBookAllocation = (req, resp, next) => {
       tester: req.body.tester,
       project: req.body.project,
       device: device.deviceId,
-      started: device.startTime,
-      ended: device.endTime
+      start_time: device.startTime,
+      end_time: device.endTime
     }
     PreBookAllocation.allocateDevice(data).then(_ => {
       resp.json({success: true});
