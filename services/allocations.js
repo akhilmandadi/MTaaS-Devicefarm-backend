@@ -109,3 +109,24 @@ module.exports.getPreBookAllocation = (req, resp) => {
     resp.json(onDemandAllocation);
   });
 }
+
+module.exports.getTesterBillingPeriods = (req, resp, next) => {
+  OnDemandAllocation.find({ tester: req.params.id })
+    .then(BillingPeriods => {
+      resp.json({BillingPeriods});
+    }).catch(e => next(e));
+};
+
+module.exports.getProjectAllocationDetails = (req, resp, next) => {
+OnDemandAllocation.find({ project: req.params.project_id })
+.then(AllocationDetails => {
+  resp.json({AllocationDetails});
+}).catch(e => next(e));
+};
+
+module.exports.getOnDemandAllocationDetails = (req, resp, next) => {
+  OnDemandAllocation.find()
+  .then(AllocationDetails => {
+    resp.json({AllocationDetails});
+  }).catch(e => next(e));
+  };
