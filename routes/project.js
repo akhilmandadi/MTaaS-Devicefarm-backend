@@ -37,5 +37,6 @@ router.get('/run', projects.getRunStatus)
 router.get('/project/:id/tests', projects.getTestsOfAProject)
 router.post('/run', projects.stopsTests)
 router.post('/rundetails', projects.getTestDetails)
+router.get('/project/:id/aggrTests', projects.getAggrTestResults)
 
 module.exports = router;
