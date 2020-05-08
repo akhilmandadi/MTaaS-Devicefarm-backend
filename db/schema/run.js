@@ -26,16 +26,12 @@ const runSchema = new Schema({
     testPackageFileType: { type: String, required: true },
     artifacts: { type: Object, required: false },
     stopped: { type: String, required: false },
+    deviceMinutes: { type: mongoose.Schema.Types.Mixed, required: false, default: {} },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: "projects" },
     testerId: { type: mongoose.Schema.Types.ObjectId, ref: "testers" },
-    allocationId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        refPath: 'allocationType', 
-        required: true 
-    },
     allocationType: {
         type: String, 
-        enum: ['OnDemandAlloation','PreBookAllocation'],
+        enum: ['ondemand','prebook'],
         required: true,
     }
 }, { collection: 'runs' });

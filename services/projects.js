@@ -13,6 +13,8 @@ const requestPromise = require('request-promise');
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'us-east-1' })
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId;
 
 const devicefarm = new AWS.DeviceFarm({
     apiVersion: '2015-06-23',
@@ -324,14 +326,13 @@ const createRun = async (request, response) => {
         logger.debug("Run Params :: " + JSON.stringify(runParams))
         let runResponse = await devicefarm.scheduleRun(runParams).promise()
         logger.debug("Create Run Response :: " + JSON.stringify(runResponse))
-        console.log(request.body)
         request.body.arn = runResponse.run.arn;
         request.body.status = runResponse.run.status;
         request.body.result = runResponse.run.result;
         request.body.created = runResponse.run.created;
         request.body.started = runResponse.run.started;
         request.body.triggeredAt = new Date().toISOString();
-        console.log(request.body)
+        request.body.deviceMinutes = {};
         const resp = await operations.saveDocuments(run, request.body, { runValidators: true })
         return response.status(200).json({});
     } catch (ex) {
@@ -344,7 +345,7 @@ const createRun = async (request, response) => {
 
 const getRunStatus = async (request, response) => {
     try {
-        let schedule_run_result = await devicefarm.listArtifacts({ arn: "arn:aws:devicefarm:us-west-2:915431243571:run:ede20088-7c9e-44a6-9543-6d2bf63cf46a/ee384019-4625-46e9-9dd9-2d20ffc9704d", type: "LOG" }).promise()
+        let schedule_run_result = await devicefarm.listArtifacts({ arn: "arn:aws:devicefarm:us-west-2:915431243571:run:d4d95e50-00a3-403b-b737-2bdd3e6782f2/904eb0e1-aca9-4040-955f-779b1c83dac5", type: "FILE" }).promise()
         //let schedule_run_result = await devicefarm.listProjects({}).promise()
         console.log(schedule_run_result)
         return response.status(200).json(schedule_run_result);
@@ -361,7 +362,10 @@ const updateStatuses = async (id) => {
     for (test of tests) {
         let resp = await devicefarm.getRun({ arn: test.arn }).promise();
         let data = { 'status': resp.run.status, 'result': resp.run.result }
-        if (resp.run.status === "COMPLETED") data.stopped = resp.run.stopped
+        if (resp.run.status === "COMPLETED") {
+            data.stopped = resp.run.stopped
+            data.deviceMinutes = resp.run.deviceMinutes
+        }
         await operations.updateField(run, test._id, data)
     }
 }
@@ -397,7 +401,37 @@ const stopsTests = async (request, response) => {
 const getTestDetails = async (request, response) => {
     try {
         const { id } = request.body;
-        return response.status(200).json(await devicefarm.getRun({ arn: id }).promise());
+        let resp = await devicefarm.getRun({ arn: id }).promise()
+        resp.run.devices = (await run.find({ 'arn': id }, { selectedDevices: 1 }))[0]['selectedDevices']
+        resp.screenshots = await devicefarm.listArtifacts({ arn: id, type: "SCREENSHOT" }).promise()
+        resp.logs = await devicefarm.listArtifacts({ arn: id, type: "FILE" }).promise()
+        return response.status(200).json(resp);
+    } catch (ex) {
+        logger.error(ex);
+        const message = ex.message ? ex.message : 'Error while stopping run';
+        const code = ex.statusCode ? ex.statusCode : 500;
+        return response.status(code).json({ message });
+    }
+}
+
+const getAggrTestResults = async (request, response) => {
+    try {
+        let aggr = [
+            { "$match": { "projectId": ObjectId(request.params.id) } },
+            {
+                "$group": {
+                    _id: "$result",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    "name": "$_id",
+                    "value": "$count"
+                }
+            }
+        ]
+        return response.status(200).json(await run.aggregate(aggr));
     } catch (ex) {
         logger.error(ex);
         const message = ex.message ? ex.message : 'Error while stopping run';
@@ -424,3 +458,4 @@ module.exports.getTestersOfAProject = getTestersOfAProject;
 module.exports.updateTestersForAProject = updateTestersForAProject;
 module.exports.deleteTestersForAProject = deleteTestersForAProject;
 module.exports.deleteProject = deleteProject;
+module.exports.getAggrTestResults = getAggrTestResults;

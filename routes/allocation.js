@@ -3,7 +3,6 @@ const router = express.Router();
 const allocations = require('../services/allocations');
 
 router.get('/ondemand', allocations.getAllOnDemandAllocations);
-router.get('/OnDemandAllocationDetails', allocations.getOnDemandAllocationDetails);
 router.post('/ondemand/real', allocations.createOnDemandAllocationReal);
 router.post('/ondemand/emulator', allocations.createOnDemandAllocationEmulator);
 router.get('/ondemand/:id', allocations.getOnDemandAllocation);

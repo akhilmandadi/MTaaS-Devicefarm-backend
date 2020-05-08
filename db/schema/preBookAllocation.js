@@ -2,27 +2,51 @@ const mongoose = require('mongoose');
 let {PreBookDevice} = require('./preBookDevice')
 
 const PreBookAllocationSchema = new mongoose.Schema({
-  device: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'PreBookDevice'
-  },
-  tester: {
+  _id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'tester'
+    auto: true
   },
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
+  projectId: { type: mongoose.Schema.Types.ObjectId, ref: "projects" },
+  deviceType: {
+    type: String,
     required: true,
-    ref: 'projects'
+    enum: ['emulator', 'real']
   },
-  started: {
-    type: Date,
+  name: {
+    type: String,
+    required: true
+  },
+  osType: {
+    type: String,
+    required: true,
+    enum: ['ANDROID', 'IOS']
+  },
+  osVersion: {
+    type: String,
     required: true,
   },
-  ended: {
-    type: Date,
+  arn: {
+    type: String,
     required: true,
+  },
+  start_time: {
+    type: String,
+    required: true,
+  },
+  end_time: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    required: false,
+    default: 'available',
+    enum: [
+      'available',
+      'allocated',
+      'maintenance'
+    ]
   }
 })
 

@@ -24,6 +24,10 @@ const PreBookDeviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  arn: {
+    type: String,
+    required: true,
+  }
 })
 
 module.exports.PreBookDevice = mongoose.model.PreBookDevice || mongoose.model('PreBookDevice',PreBookDeviceSchema);

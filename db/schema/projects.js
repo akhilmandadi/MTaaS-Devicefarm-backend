@@ -8,6 +8,7 @@ const projectSchema = new Schema({
         auto: true
     },
     name: { type: String, required: true },
+    description: { type: String, required: false },
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: "managers" },
     testers: [
         {

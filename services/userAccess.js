@@ -63,5 +63,29 @@ const signup = async (request, response) => {
     }
 };
 
+const getProfile = async (request, response) => {
+    try {
+        return response.status(200).json((await tester.find({ _id: request.params.id }))[0]);
+    } catch (error) {
+        logger.error(JSON.stringify(error));
+        const message = error.message ? error.message : 'Error Ocurred at Server';
+        const code = error.statusCode ? error.statusCode : 500;
+        return response.status(code).json({ message }).status(code);
+    }
+};
+
+const updateProfile = async (request, response) => {
+    try {
+        return response.status(200).json(await tester.findOneAndUpdate({ _id: request.params.id }, request.body));
+    } catch (error) {
+        logger.error(JSON.stringify(error));
+        const message = error.message ? error.message : 'Error Ocurred at Server';
+        const code = error.statusCode ? error.statusCode : 500;
+        return response.status(code).json({ message }).status(code);
+    }
+};
+
 module.exports.signin = signin;
 module.exports.signup = signup;
+module.exports.getProfile = getProfile;
+module.exports.updateProfile = updateProfile;
