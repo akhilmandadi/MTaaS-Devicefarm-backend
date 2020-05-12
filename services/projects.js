@@ -375,7 +375,9 @@ const getTestsOfAProject = async (request, response) => {
         const { id } = request.params;
         await updateStatuses(id)
         let resp = [];
-        resp = await run.find({ 'projectId': id }, { __v: 0 }).lean().populate('testerId', { name: 1, email: 1, _id: 1 });
+        let filter = { 'projectId': id };
+        request.query.testerId && (filter.testerId = request.query.testerId);
+        resp = await run.find(filter, { __v: 0 }).lean().populate('testerId', { name: 1, email: 1, _id: 1 });
         return response.status(200).json(resp);
     } catch (ex) {
         logger.error(ex);
